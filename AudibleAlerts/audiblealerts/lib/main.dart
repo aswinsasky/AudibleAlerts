@@ -1,4 +1,4 @@
-import "package:audiblealerts/settings_page.dart";
+import "package:audiblealerts/addtask_page.dart";
 import "package:flutter/cupertino.dart";
 import "package:flutter/material.dart";
 import "package:audiblealerts/appbar_style.dart";
@@ -30,7 +30,7 @@ class MyHomePage extends StatelessWidget {
           Navigator.push(
               context,
               MaterialPageRoute<void>(
-                builder: (context) => const SettingsPage(),
+                builder: (context) => const AddTaskPage(),
               ));
         },
       ),
