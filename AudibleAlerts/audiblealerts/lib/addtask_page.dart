@@ -6,10 +6,16 @@ class AddTaskPage extends StatelessWidget {
   const AddTaskPage({super.key});
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      appBar: AppBarStyles("Add Task"),
+    return Scaffold(
+      appBar: const AppBarStyles("Add Task"),
       backgroundColor: Colors.white,
-      body: InputField(),
+      body: const InputField(),
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: Colors.black,
+        foregroundColor: Colors.white,
+        onPressed: () {},
+        child: const Icon(Icons.check_outlined),
+      ),
     );
   }
 }

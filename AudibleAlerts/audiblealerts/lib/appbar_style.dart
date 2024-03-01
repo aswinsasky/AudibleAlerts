@@ -10,10 +10,8 @@ class AppBarStyles extends StatelessWidget implements PreferredSizeWidget {
       backgroundColor: Colors.black,
       title: StyledText(titles),
       iconTheme: const IconThemeData(color: Colors.white),
-      actions: const <Widget>[
-        Icon(
-          Icons.more_vert,
-        ),
+      actions: <Widget>[
+        IconButton(onPressed: () {}, icon: const Icon(Icons.settings_sharp))
       ],
     );
   }
