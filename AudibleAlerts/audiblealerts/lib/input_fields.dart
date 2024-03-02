@@ -14,10 +14,18 @@ const List<String> list = <String>[
   "1 hour",
   "No Snooze"
 ];
+const List<String> list2 = <String>[
+  "Daily",
+  "Weekly",
+  "Monthly",
+  "Do not Repeat",
+];
 String dropdownvalue = list.first;
+String dropdownvalue2 = list2.first;
 
 class InputField extends StatefulWidget {
-  const InputField({super.key});
+  final dynamic selectedTime;
+  const InputField({super.key, this.selectedTime});
 
   @override
   State<InputField> createState() {
@@ -55,7 +63,7 @@ class _InputFieldState extends State<InputField> {
               Expanded(
                 child: DatePickerButton(),
               ),
-              TimePickerButton(Colors.black)
+              TimePickerButton()
             ],
           ),
         ),
@@ -84,6 +92,32 @@ class _InputFieldState extends State<InputField> {
                   );
                 },
               ),
+            ),
+          ],
+        ),
+        Row(
+          children: [
+            const Text(
+              "Repeat Frequency     ",
+              style: TextStyle(
+                  color: Colors.black,
+                  fontSize: 20,
+                  fontWeight: FontWeight.w600),
+            ),
+            DropdownButton(
+              value: dropdownvalue2,
+              hint: const Text("Select Snooze Time"),
+              items: list2.map<DropdownMenuItem<String>>((String value) {
+                return DropdownMenuItem<String>(
+                    value: value, child: Text(value));
+              }).toList(),
+              onChanged: (String? value) {
+                setState(
+                  () {
+                    dropdownvalue2 = value!;
+                  },
+                );
+              },
             ),
           ],
         ),

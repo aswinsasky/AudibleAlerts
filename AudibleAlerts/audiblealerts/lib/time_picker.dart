@@ -1,13 +1,27 @@
 import "package:flutter/material.dart";
 
-class TimePickerButton extends StatelessWidget {
-  const TimePickerButton(this.iconcolor, {super.key});
-  final Color iconcolor;
+class TimePickerButton extends StatefulWidget {
+  const TimePickerButton({super.key});
   @override
-  Widget build(BuildContext context) {
+  State<TimePickerButton> createState() {
+    return _TimePickerButtonState();
+  }
+}
+
+dynamic _selectedTime;
+
+class _TimePickerButtonState extends State<TimePickerButton> {
+  @override
+  Widget build(context) {
     return ElevatedButton(
-      onPressed: () {
-        showTimePicker(context: context, initialTime: TimeOfDay.now());
+      onPressed: () async {
+        final dynamic timevalue = await showTimePicker(
+            context: context, initialTime: TimeOfDay.now());
+        if (timevalue != null && timevalue != _selectedTime) {
+          setState(() {
+            _selectedTime = timevalue;
+          });
+        }
       },
       style: ElevatedButton.styleFrom(
         padding: const EdgeInsets.only(
@@ -21,9 +35,9 @@ class TimePickerButton extends StatelessWidget {
           ),
         ),
       ),
-      child: Icon(
+      child: const Icon(
         Icons.access_alarm,
-        color: iconcolor,
+        color: Colors.black,
       ),
     );
   }

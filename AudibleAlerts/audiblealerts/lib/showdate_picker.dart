@@ -1,8 +1,16 @@
 import "package:flutter/material.dart";
 import "package:audiblealerts/elevated_radius.dart";
 
-class DatePickerButton extends StatelessWidget {
+class DatePickerButton extends StatefulWidget {
   const DatePickerButton({super.key});
+  @override
+  State<DatePickerButton> createState() {
+    return _DatePickerButtonState();
+  }
+}
+
+class _DatePickerButtonState extends State<DatePickerButton> {
+  DateTime? _selectedDate;
   @override
   Widget build(context) {
     return ElevatedButton.icon(
@@ -17,15 +25,34 @@ class DatePickerButton extends StatelessWidget {
           backgroundColor: const Color.fromARGB(255, 255, 255, 255),
           alignment: Alignment.centerLeft,
           shape: ElavatedRadius.elevatedRadius(0)),
-      onPressed: () {
-        showDatePicker(
+      onPressed: () async {
+        final DateTime? picked = await showDatePicker(
             context: context,
             firstDate: DateTime.now(),
             lastDate: DateTime(2100));
+        if (picked != null && picked != _selectedDate) {
+          final timePicked = await showTimePicker(
+            context: context,
+            initialTime: TimeOfDay.now(),
+          );
+          setState(
+            () {
+              if (timePicked != null) {
+                _selectedDate = DateTime(
+                  picked.year,
+                  picked.month,
+                  picked.day,
+                  timePicked.hour,
+                  timePicked.minute,
+                );
+              }
+            },
+          );
+        }
       },
-      label: const Text(
-        "Select Date",
-        style: TextStyle(
+      label: Text(
+        _selectedDate == null ? "Select Date" : "Date:$_selectedDate",
+        style: const TextStyle(
             color: Colors.black, fontWeight: FontWeight.w600, fontSize: 20),
       ),
       icon: const Icon(
