@@ -6,15 +6,24 @@ import "package:flutter/widgets.dart";
 
 void main() {
   runApp(
-    const AudibleAlerts(),
+     const AudibleAlerts(),
   );
 }
+ ThemeMode? selectedTheme;
+class AudibleAlerts extends StatefulWidget {
+  const AudibleAlerts({super.key,selectedTheme});
+  
+@override
+State<AudibleAlerts>createState(){
+  return  _AudibleAlertsState();
+}
+}
+ 
+  class _AudibleAlertsState extends State<AudibleAlerts>{
 
-class AudibleAlerts extends StatelessWidget {
-  const AudibleAlerts({super.key});
-  @override
+    @override
   Widget build(BuildContext context) {
-    return const MaterialApp(home: MyHomePage());
+    return MaterialApp(theme: ThemeData.light(),themeMode:selectedTheme,home: const MyHomePage());
   }
 }
 
@@ -36,4 +45,6 @@ class MyHomePage extends StatelessWidget {
       ),
     );
   }
-}
+
+  }
+
