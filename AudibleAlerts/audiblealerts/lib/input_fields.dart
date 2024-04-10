@@ -1,3 +1,4 @@
+import 'package:audiblealerts/addtask_page.dart';
 import 'package:audiblealerts/text_fields.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -24,8 +25,9 @@ String dropdownvalue = list.first;
 String dropdownvalue2 = list2.first;
 
 class InputField extends StatefulWidget {
-  final dynamic selectedTime;
-  const InputField({super.key, this.selectedTime});
+  final DateTime? selectedDate;
+  final String? textfieldValue;
+  const InputField({super.key, this.selectedDate, this.textfieldValue});
 
   @override
   State<InputField> createState() {
@@ -88,6 +90,7 @@ class _InputFieldState extends State<InputField> {
                   setState(
                     () {
                       dropdownvalue = value!;
+                      AddTaskPage(dropdownvalue: dropdownvalue);
                     },
                   );
                 },
@@ -115,6 +118,7 @@ class _InputFieldState extends State<InputField> {
                 setState(
                   () {
                     dropdownvalue2 = value!;
+                    AddTaskPage(dropdownvalue2: dropdownvalue2);
                   },
                 );
               },

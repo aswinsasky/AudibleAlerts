@@ -1,5 +1,8 @@
+import "package:audiblealerts/addtask_page.dart";
 import "package:flutter/material.dart";
 import "package:audiblealerts/elevated_radius.dart";
+
+DateTime? selectedDate;
 
 class DatePickerButton extends StatefulWidget {
   const DatePickerButton({super.key});
@@ -10,9 +13,8 @@ class DatePickerButton extends StatefulWidget {
 }
 
 class _DatePickerButtonState extends State<DatePickerButton> {
-  DateTime? _selectedDate;
   @override
-  Widget build(context) {
+  Widget build(BuildContext context) {
     return ElevatedButton.icon(
       style: ElevatedButton.styleFrom(
           minimumSize: const Size.fromWidth(300),
@@ -30,7 +32,7 @@ class _DatePickerButtonState extends State<DatePickerButton> {
             context: context,
             firstDate: DateTime.now(),
             lastDate: DateTime(2100));
-        if (picked != null && picked != _selectedDate) {
+        if (picked != null && picked != selectedDate) {
           final timePicked = await showTimePicker(
             context: context,
             initialTime: TimeOfDay.now(),
@@ -38,7 +40,7 @@ class _DatePickerButtonState extends State<DatePickerButton> {
           setState(
             () {
               if (timePicked != null) {
-                _selectedDate = DateTime(
+                selectedDate = DateTime(
                   picked.year,
                   picked.month,
                   picked.day,
@@ -46,12 +48,13 @@ class _DatePickerButtonState extends State<DatePickerButton> {
                   timePicked.minute,
                 );
               }
+              AddTaskPage(selectedDate: selectedDate);
             },
           );
         }
       },
       label: Text(
-        _selectedDate == null ? "Select Date" : "Date:$_selectedDate",
+        selectedDate == null ? "SelectDate" : "Date:$selectedDate",
         style: const TextStyle(
             color: Colors.black, fontWeight: FontWeight.w600, fontSize: 20),
       ),
