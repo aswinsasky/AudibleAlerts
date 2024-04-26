@@ -23,13 +23,14 @@ class DatabaseHelper {
 
   Future<void> _createDb(Database db, int version) async {
     await db.execute(
-        'CREATE TABLE $_tableName(id INTEGER PRIMARY KEY AUTOINCREMENT, stringValue TEXT, dateTimeValue TEXT),dropdownvalue1 TEXT,dropdownvalue2 TEXT');
+        'CREATE TABLE $_tableName(id INTEGER PRIMARY KEY AUTOINCREMENT, stringValue TEXT, dateTimeValue TEXT,dropdownvalue1 TEXT,dropdownvalue2 TEXT)');
   }
 
-  Future<int> insertData(String stringValue, String dateTimeValue,
+  Future<int> insertData(int nextId, String stringValue, String dateTimeValue,
       String dropdownvalue1, String dropdownvalue2) async {
     final db = await database;
     return await db.insert(_tableName, {
+      'id': nextId,
       'stringValue': stringValue,
       'dateTimeValue': dateTimeValue,
       'dropdownvalue1': dropdownvalue1,
@@ -40,5 +41,27 @@ class DatabaseHelper {
   Future<List<Map<String, dynamic>>> getData() async {
     final db = await database;
     return await db.query(_tableName);
+  }
+
+  Future<void> deleteData(int id) async {
+    final db = await database;
+    await db.delete(
+      '$_tableName',
+      where: 'id=?',
+      whereArgs: [id],
+    );
+    await db.rawUpdate('UPDATE $_tableName SET id=id-1 WHERE id > ?', [id]);
+  }
+
+  void deleteAll() async {
+    final db = await database;
+    await db.rawDelete('DELETE FROM $_tableName');
+    await db.close();
+  }
+
+  Future<void> resetID() async {
+    final db = await database;
+    await db.execute(
+        'UPDATE $_tableName SET id=id-(SELECT MIN(id)FROM $_tableName)');
   }
 }

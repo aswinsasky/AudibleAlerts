@@ -4,19 +4,27 @@ import 'package:audiblealerts/showdate_picker.dart';
 import 'package:audiblealerts/text_fields.dart';
 import 'package:flutter/material.dart';
 import "package:audiblealerts/appbar_style.dart";
+import "model/ListDate.dart";
+
+late List<Map<String, dynamic>> data;
+final dbHelper = DatabaseHelper();
+void _retrieveData() async {
+  data = await dbHelper.getData();
+}
 
 class AddTaskPage extends StatefulWidget {
   final DateTime? selectedDate;
   final String? dropdownvalue, dropdownvalue2;
   final String? textfieldValue;
-  final String data = "Iam";
 
-  const AddTaskPage(
+  AddTaskPage(
       {super.key,
       this.selectedDate,
       this.dropdownvalue,
       this.dropdownvalue2,
-      this.textfieldValue});
+      this.textfieldValue}) {
+    _retrieveData();
+  }
   @override
   State<AddTaskPage> createState() {
     return _AddTaskPageState();
@@ -24,6 +32,17 @@ class AddTaskPage extends StatefulWidget {
 }
 
 class _AddTaskPageState extends State<AddTaskPage> {
+  final dbHelper = DatabaseHelper();
+  void _insertData(int id) async {
+    int result = await dbHelper.insertData(
+        id,
+        textfieldValue.toString(),
+        selectedDate.toString(),
+        dropdownvalue2.toString(),
+        dropdownvalue.toString());
+    print('Inserted row id: $result');
+  }
+
   @override
   Widget build(context) {
     return Scaffold(
@@ -36,9 +55,9 @@ class _AddTaskPageState extends State<AddTaskPage> {
         onPressed: () {
           setState(
             () {
-              MyHomePage(
-                data: data,
-              );
+              _retrieveData();
+              _insertData(data.length);
+              MyHomePage();
               Navigator.push(context, MaterialPageRoute(
                 builder: (context) {
                   return MyHomePage(
@@ -55,6 +74,4 @@ class _AddTaskPageState extends State<AddTaskPage> {
       ),
     );
   }
-
-  String data = "I am";
 }
