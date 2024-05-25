@@ -1,14 +1,36 @@
 import "package:audiblealerts/addtask_page.dart";
-import "package:flutter/cupertino.dart";
+
 import "package:flutter/material.dart";
 import "package:audiblealerts/appbar_style.dart";
 import "package:audiblealerts/model/ListDate.dart";
-import "package:flutter/widgets.dart";
+import "package:permission_handler/permission_handler.dart";
 
 void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  var notificationStatus = await Permission.notification.status;
+
+  if (!notificationStatus.isGranted) {
+    bool showRationale =
+        await Permission.notification.shouldShowRequestRationale;
+
+    if (!showRationale) {
+      notificationStatus = await Permission.notification.request();
+      if (notificationStatus.isGranted) {
+        print('Notification is granted');
+      }
+    } else {
+      print('Notification denied');
+    }
+  } else {
+    print("Already granted");
+  }
   runApp(
-    const AudibleAlerts(),
+    AudibleAlerts(),
   );
+}
+
+Future<List<Map<String, dynamic>>> _retrieveData() async {
+  return await dbHelper.getData();
 }
 
 class AudibleAlerts extends StatelessWidget {
@@ -19,13 +41,10 @@ class AudibleAlerts extends StatelessWidget {
   }
 }
 
-class MyHomePage extends StatelessWidget {
+class MyHomePage extends StatefulWidget {
   final dbHelper = DatabaseHelper();
   final DateTime? selectedDate;
   final String? textfieldValue, dropdownvalue, dropdownvalue2;
-  Future<List<Map<String, dynamic>>> _retrieveData() async {
-    return await dbHelper.getData();
-  }
 
   MyHomePage(
       {super.key,
@@ -35,6 +54,13 @@ class MyHomePage extends StatelessWidget {
       this.dropdownvalue2}) {
     _retrieveData();
   }
+  @override
+  State<MyHomePage> createState() {
+    return _MyHomePageState();
+  }
+}
+
+class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -97,7 +123,9 @@ class MyHomePage extends StatelessWidget {
                                   ],
                                 ),
                                 onPressed: () {
-                                  _deleteData(index);
+                                  setState(() {
+                                    _deleteData(index);
+                                  });
                                 },
                               ),
                             );
