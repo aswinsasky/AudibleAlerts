@@ -1,0 +1,30 @@
+package com.example.your_app_name;
+
+import android.app.Service;
+import android.content.Intent;
+import android.os.IBinder;
+import android.util.Log;
+import androidx.annotation.Nullable;
+import io.flutter.plugin.common.MethodChannel;
+import io.flutter.plugin.common.PluginRegistry;
+
+public class AlarmService extends Service {
+    @Nullable
+    @Override
+    public IBinder onBind(Intent intent) {
+        return null;
+    }
+
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        Log.d("AlarmService", "Service started!");
+
+        // Call the Flutter method to trigger TTS
+        MethodChannel channel = new MethodChannel(getFlutterView(), "alarm_channel");
+        channel.invokeMethod("speakText", "Hello, this is your alarm");
+
+        // Stop the service after handling the alarm
+        stopSelf();
+        return START_NOT_STICKY;
+    }
+}

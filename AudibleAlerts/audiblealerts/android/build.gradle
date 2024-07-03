@@ -1,4 +1,10 @@
 allprojects {
+    ext{
+        compileSdkVersion = 31
+        minSdkVersion = 21
+        targetSdkVersion = 31
+        kotlinVersion = '1.6.10'
+    }
     repositories {
         google()
         mavenCentral()

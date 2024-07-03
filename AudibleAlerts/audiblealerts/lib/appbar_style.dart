@@ -1,3 +1,4 @@
+import "package:audiblealerts/main.dart";
 import "package:flutter/material.dart";
 import "package:audiblealerts/styled_text.dart";
 
@@ -11,7 +12,11 @@ class AppBarStyles extends StatelessWidget implements PreferredSizeWidget {
       title: StyledText(titles),
       iconTheme: const IconThemeData(color: Colors.white),
       actions: <Widget>[
-        IconButton(onPressed: () {}, icon: const Icon(Icons.settings_sharp))
+        IconButton(
+            onPressed: () {
+              speak('HI All');
+            },
+            icon: const Icon(Icons.settings_sharp))
       ],
     );
   }

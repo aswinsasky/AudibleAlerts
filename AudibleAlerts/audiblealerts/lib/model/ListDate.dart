@@ -23,7 +23,7 @@ class DatabaseHelper {
 
   Future<void> _createDb(Database db, int version) async {
     await db.execute(
-        'CREATE TABLE $_tableName(id INTEGER PRIMARY KEY AUTOINCREMENT, stringValue TEXT, dateTimeValue TEXT,dropdownvalue1 TEXT,dropdownvalue2 TEXT)');
+        'CREATE TABLE $_tableName(id INTEGER PRIMARY KEY AUTOINCREMENT, stringValue TEXT, dateTimeValue TEXT ,dropdownvalue1 TEXT,dropdownvalue2 TEXT)');
   }
 
   Future<int> insertData(int nextId, String stringValue, String dateTimeValue,
@@ -63,5 +63,24 @@ class DatabaseHelper {
     final db = await database;
     await db.execute(
         'UPDATE $_tableName SET id=id-(SELECT MIN(id)FROM $_tableName)');
+  }
+
+  Future<List<Map<String, dynamic>>> fetchAlarms() async {
+    final db = await database;
+    return await db.query('TaskTable');
+  }
+
+  Future<String?> getTaskName(int id) async {
+    var db = await database;
+    List<Map<String, dynamic>> results = await db.query(
+      '$_tableName',
+      columns: ['stringValue'],
+      where: 'id= ?',
+      whereArgs: [id],
+    );
+    if (results.isNotEmpty) {
+      return results.first['stringValue'] as String?;
+    }
+    return null;
   }
 }
