@@ -7,11 +7,12 @@ class StyledText extends StatelessWidget {
   Widget build(context) {
     return Text(
       text,
+      textAlign: TextAlign.justify,
       style: const TextStyle(
-        color: Colors.white,
-        fontStyle: FontStyle.italic,
-        fontWeight: FontWeight.w500,
-      ),
+          color: Colors.white,
+          fontStyle: FontStyle.italic,
+          fontWeight: FontWeight.w700,
+          fontSize: 27),
     );
   }
 }

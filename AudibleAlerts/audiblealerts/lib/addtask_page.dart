@@ -3,7 +3,6 @@ import 'package:audiblealerts/main.dart';
 import 'package:audiblealerts/showdate_picker.dart';
 import 'package:audiblealerts/text_fields.dart';
 import 'package:flutter/material.dart';
-import "package:audiblealerts/appbar_style.dart";
 import "model/ListDate.dart";
 
 late List<Map<String, dynamic>> data;
@@ -46,7 +45,24 @@ class _AddTaskPageState extends State<AddTaskPage> {
   @override
   Widget build(context) {
     return Scaffold(
-      appBar: const AppBarStyles("Add Task"),
+      appBar: AppBar(
+        backgroundColor: const Color.fromARGB(255, 189, 85, 253),
+        title: const Padding(
+          padding: EdgeInsets.only(
+            left: 0,
+            top: 0,
+          ),
+          child: Text(
+            "Add Task",
+            style: TextStyle(
+                color: Colors.white,
+                fontSize: 25,
+                fontStyle: FontStyle.italic,
+                fontWeight: FontWeight.w700),
+          ),
+        ),
+        iconTheme: const IconThemeData(color: Colors.white),
+      ),
       backgroundColor: Colors.white,
       body: const InputField(),
       floatingActionButton: FloatingActionButton(

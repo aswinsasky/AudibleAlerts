@@ -3,6 +3,9 @@ import "package:flutter/material.dart";
 import "package:audiblealerts/elevated_radius.dart";
 
 DateTime? selectedDate;
+final selectedDate2 = selectedDate?.year;
+final selectedDate3 = selectedDate?.month;
+final selectedDate4 = selectedDate?.day;
 
 class DatePickerButton extends StatefulWidget {
   const DatePickerButton({super.key});
@@ -54,7 +57,9 @@ class _DatePickerButtonState extends State<DatePickerButton> {
         }
       },
       label: Text(
-        selectedDate == null ? "SelectDate" : "Date:$selectedDate",
+        selectedDate == null
+            ? "Select Date"
+            : "Date:$selectedDate2-$selectedDate3-$selectedDate4",
         style: const TextStyle(
             color: Colors.black, fontWeight: FontWeight.w600, fontSize: 20),
       ),

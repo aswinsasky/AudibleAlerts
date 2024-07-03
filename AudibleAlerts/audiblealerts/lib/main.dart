@@ -11,18 +11,22 @@ import "package:android_alarm_manager_plus/android_alarm_manager_plus.dart";
 import "package:flutter_tts/flutter_tts.dart";
 import "package:path/path.dart";
 import "package:sqflite/sqflite.dart";
+import "package:flutter_ringtone_player/flutter_ringtone_player.dart";
 
 final dbHelper = DatabaseHelper();
 void callback(int id) async {
   final taskName = await dbHelper.getTaskName(id);
   print('Alarm triggered for task: $taskName at ${DateTime.now()}');
-  try {
-    FlutterTts flutterTts = FlutterTts();
-    flutterTts.speak(taskName.toString());
-    print('TTS spoke task: $taskName');
-  } catch (e) {
-    print('Error in TTS: $e');
+  FlutterTts flutterTts = FlutterTts();
+  FlutterRingtonePlayer.playAlarm(volume: 0.5);
+  for (int i = 0; i < 3; i++) {
+    await Future.delayed(
+      const Duration(seconds: 5),
+    );
+    await flutterTts.speak(taskName.toString());
   }
+  FlutterRingtonePlayer.stop();
+  dbHelper.deleteData(id);
 }
 
 void scheduleAlarm(int id, DateTime alarmTime, String taskName) async {
@@ -121,7 +125,8 @@ class AudibleAlerts extends StatelessWidget {
   }
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(home: MyHomePage());
+    return MaterialApp(
+        home: DefaultTabController(length: 2, child: MyHomePage()));
   }
 }
 
@@ -152,91 +157,110 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: const AppBarStyles("AudibleAlerts"),
-        body: FutureBuilder<void>(
-          future: _retrieveData(),
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return const Center(
-                child: CircularProgressIndicator(),
+    return MaterialApp(
+      home: DefaultTabController(
+        length: 2,
+        child: Scaffold(
+          appBar: const AppBarStyles("AudibleAlerts"),
+          body: FutureBuilder<List<Map<String, dynamic>>>(
+            future: _retrieveData(),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const Center(
+                  child: CircularProgressIndicator(),
+                );
+              } else if (snapshot.hasError) {
+                return Center(
+                  child: Text('Error: ${snapshot.error}'),
+                );
+              } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                return const Center(
+                  child: Text('Press + to add Tasks'),
+                );
+              }
+              List<Map<String, dynamic>> data = snapshot.data!;
+              List<Map<String, dynamic>> todayTasks = [];
+              List<Map<String, dynamic>> upcomingTasks = [];
+              DateTime now = DateTime.now();
+              DateTime today =
+                  DateTime(now.year, now.month, now.day, 23, 59, 59);
+              DateTime upcoming = today.add(const Duration(seconds: 1));
+              for (var task in data) {
+                DateTime taskDueDate = DateTime.parse(task['dateTimeValue']);
+                if (taskDueDate.isBefore(upcoming)) {
+                  todayTasks.add(task);
+                } else {
+                  upcomingTasks.add(task);
+                }
+              }
+              return TabBarView(
+                children: [
+                  _buildTabContent(context, todayTasks),
+                  _buildTabContent(context, upcomingTasks),
+                ],
               );
-            } else if (snapshot.hasError) {
-              return Center(
-                child: Text('Error: ${snapshot.error}'),
+            },
+          ),
+          floatingActionButton: FloatingActionButton(
+            child: const Icon(Icons.add),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute<void>(
+                  builder: (context) => AddTaskPage(),
+                ),
               );
-            } else {
-              List<Map<String, dynamic>> data =
-                  snapshot.data as List<Map<String, dynamic>>;
-              return Scaffold(
-                body: Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      if (data.isNotEmpty)
-                        ...List.generate(
-                          data.length,
-                          (index) {
-                            return SizedBox(
-                              width: double.infinity,
-                              child: ElevatedButton(
-                                style: const ButtonStyle(
-                                  alignment: Alignment.centerLeft,
-                                  fixedSize: MaterialStatePropertyAll(
-                                      Size.fromHeight(50)),
-                                  padding:
-                                      MaterialStatePropertyAll(EdgeInsets.zero),
-                                  backgroundColor:
-                                      MaterialStatePropertyAll(Colors.white),
-                                  shape: MaterialStatePropertyAll(
-                                    RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.all(
-                                        Radius.circular(1),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text(
-                                      data[index]['stringValue']
-                                          .toString()
-                                          .toUpperCase(),
-                                      style: const TextStyle(
-                                          fontSize: 20,
-                                          fontWeight: FontWeight.w600),
-                                    ),
-                                    const Icon(Icons.delete_outline_rounded)
-                                  ],
-                                ),
-                                onPressed: () {
-                                  setState(() {
-                                    deleteData(index);
-                                  });
-                                },
-                              ),
-                            );
-                          },
-                        )
-                    ],
+            },
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildTabContent(
+      BuildContext conext, List<Map<String, dynamic>> tasks) {
+    return Center(
+        child: Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: tasks.map(
+        (task) {
+          return SizedBox(
+            width: double.infinity,
+            child: ElevatedButton(
+              style: const ButtonStyle(
+                alignment: Alignment.centerLeft,
+                fixedSize: MaterialStatePropertyAll(Size.fromHeight(50)),
+                padding: MaterialStatePropertyAll(EdgeInsets.zero),
+                backgroundColor: MaterialStatePropertyAll(Colors.white),
+                shape: MaterialStatePropertyAll(
+                  RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(1),
+                    ),
                   ),
                 ),
-                floatingActionButton: FloatingActionButton(
-                  child: const Icon(Icons.add),
-                  onPressed: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute<void>(
-                          builder: (context) => AddTaskPage(),
-                        ));
-                  },
-                ),
-              );
-            }
-          },
-        ));
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    task['stringValue'].toString().toUpperCase(),
+                    style: const TextStyle(
+                        fontSize: 20, fontWeight: FontWeight.w600),
+                  ),
+                  const Icon(Icons.delete_outline_rounded)
+                ],
+              ),
+              onPressed: () {
+                setState(() {
+                  deleteData(tasks.indexOf(task));
+                });
+              },
+            ),
+          );
+        },
+      ).toList(),
+    ));
   }
 
   void resetAll() async {

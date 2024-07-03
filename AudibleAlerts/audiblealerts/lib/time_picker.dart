@@ -37,7 +37,7 @@ class _TimePickerButtonState extends State<TimePickerButton> {
       ),
       child: const Icon(
         Icons.access_alarm,
-        color: Colors.black,
+        color: Color.fromARGB(255, 143, 7, 141),
       ),
     );
   }

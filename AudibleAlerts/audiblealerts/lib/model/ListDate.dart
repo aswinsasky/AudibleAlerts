@@ -83,4 +83,17 @@ class DatabaseHelper {
     }
     return null;
   }
+
+  Future<DateTime> getDateTime(int id) async {
+    var db = await database;
+    List<Map<String, dynamic>> results = await db.query(
+      '$_tableName',
+      columns: ['stringValue'],
+      where: 'id= ?',
+      whereArgs: [id],
+    );
+    final dateTime = results.first['dateTimeValue'] as String;
+    final DateTime dateTime2 = DateTime.parse(dateTime);
+    return dateTime2;
+  }
 }
