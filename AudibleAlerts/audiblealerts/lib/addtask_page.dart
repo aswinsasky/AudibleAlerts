@@ -32,6 +32,13 @@ class AddTaskPage extends StatefulWidget {
 
 class _AddTaskPageState extends State<AddTaskPage> {
   final dbHelper = DatabaseHelper();
+  void _showSnackBar(BuildContext context) {
+    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+      content: Text("Please Fill All Fields"),
+      duration: Duration(seconds: 4),
+    ));
+  }
+
   void _insertData(int id) async {
     int result = await dbHelper.insertData(
         id,
@@ -69,22 +76,26 @@ class _AddTaskPageState extends State<AddTaskPage> {
         backgroundColor: const Color.fromARGB(255, 189, 82, 237),
         foregroundColor: Colors.white,
         onPressed: () {
-          setState(
-            () {
-              _retrieveData();
-              _insertData(data.length);
-              MyHomePage();
-              Navigator.push(context, MaterialPageRoute(
-                builder: (context) {
-                  return MyHomePage(
-                      selectedDate: selectedDate,
-                      dropdownvalue2: dropdownvalue2,
-                      dropdownvalue: dropdownvalue,
-                      textfieldValue: textfieldValue);
-                },
-              ));
-            },
-          );
+          if (selectedDate != null && textfieldValue != null) {
+            setState(
+              () {
+                _retrieveData();
+                _insertData(data.length);
+                MyHomePage();
+                Navigator.push(context, MaterialPageRoute(
+                  builder: (context) {
+                    return MyHomePage(
+                        selectedDate: selectedDate,
+                        dropdownvalue2: dropdownvalue2,
+                        dropdownvalue: dropdownvalue,
+                        textfieldValue: textfieldValue);
+                  },
+                ));
+              },
+            );
+          } else {
+            _showSnackBar(context);
+          }
         },
         child: const Icon(Icons.check_outlined),
       ),

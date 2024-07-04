@@ -70,30 +70,31 @@ class DatabaseHelper {
     return await db.query('TaskTable');
   }
 
-  Future<String?> getTaskName(int id) async {
+  Future<String?> getTaskName(int id, String columnName) async {
     var db = await database;
     List<Map<String, dynamic>> results = await db.query(
       '$_tableName',
-      columns: ['stringValue'],
+      columns: [columnName],
       where: 'id= ?',
       whereArgs: [id],
     );
     if (results.isNotEmpty) {
-      return results.first['stringValue'] as String?;
+      return results.first[columnName] as String?;
     }
     return null;
   }
 
-  Future<DateTime> getDateTime(int id) async {
+  Future<String?> getDateTime(int id) async {
     var db = await database;
     List<Map<String, dynamic>> results = await db.query(
       '$_tableName',
-      columns: ['stringValue'],
+      columns: ['dateTimeValue'],
       where: 'id= ?',
       whereArgs: [id],
     );
-    final dateTime = results.first['dateTimeValue'] as String;
-    final DateTime dateTime2 = DateTime.parse(dateTime);
-    return dateTime2;
+    if (results.isNotEmpty) {
+      return results.first['dateTimeValue'] as String?;
+    }
+    return null;
   }
 }

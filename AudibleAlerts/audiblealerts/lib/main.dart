@@ -1,6 +1,7 @@
 import "dart:async";
 
 import "package:audiblealerts/addtask_page.dart";
+import "package:audiblealerts/input_fields.dart";
 
 import "package:flutter/material.dart";
 import "package:audiblealerts/appbar_style.dart";
@@ -14,19 +15,53 @@ import "package:sqflite/sqflite.dart";
 import "package:flutter_ringtone_player/flutter_ringtone_player.dart";
 
 final dbHelper = DatabaseHelper();
+late List<Map<String, dynamic>> number;
+void _getData() async {
+  number = await dbHelper.getData();
+}
+
 void callback(int id) async {
-  final taskName = await dbHelper.getTaskName(id);
+  _getData();
+  showNotification(FlutterLocalNotificationsPlugin());
+  final dropDownValue = await dbHelper.getTaskName(id, 'dropdownvalue1');
+  final taskName = await dbHelper.getTaskName(id, 'stringValue');
+  String nextdateTime = dbHelper.getTaskName(id, 'dateTimeValue').toString();
+  if (nextdateTime == null) {
+    nextdateTime = '$DateTime.now()';
+  }
+  DateTime? nextdateTime2 = DateTime.tryParse(nextdateTime);
+  if (nextdateTime2 == null) {
+    nextdateTime2 = DateTime.now();
+  }
+  int nextdateTime4 = nextdateTime2.hour;
+  int nextdateTime5 = nextdateTime2.minute;
+  DateTime nextdateTime3 = DateTime(nextdateTime2.year, nextdateTime2.month,
+      nextdateTime2.day + 1, nextdateTime2.hour, nextdateTime2.minute);
   print('Alarm triggered for task: $taskName at ${DateTime.now()}');
+
   FlutterTts flutterTts = FlutterTts();
+  flutterTts.setVoice({'name': 'Karen'});
+  flutterTts.setPitch(1.0);
+  flutterTts.setSpeechRate(0.4);
   FlutterRingtonePlayer.playAlarm(volume: 0.5);
-  for (int i = 0; i < 3; i++) {
+  for (int i = 0; i < 2; i++) {
     await Future.delayed(
       const Duration(seconds: 5),
     );
-    await flutterTts.speak(taskName.toString());
+    await flutterTts.speak(
+        'It is $nextdateTime4 $nextdateTime5 Time to ${taskName.toString()}');
   }
   FlutterRingtonePlayer.stop();
-  dbHelper.deleteData(id);
+  print('The length is ${number.length}');
+  if (dropDownValue.toString() == 'Daily') {
+    dbHelper.insertData(
+        number.length,
+        taskName.toString(),
+        nextdateTime3.toString(),
+        dbHelper.getTaskName(id, dropdownvalue).toString(),
+        dropDownValue.toString());
+  }
+  await dbHelper.deleteData(id);
 }
 
 void scheduleAlarm(int id, DateTime alarmTime, String taskName) async {
@@ -89,7 +124,10 @@ void main() async {
       AndroidInitializationSettings('@mipmap/ic_launcher');
   const InitializationSettings initializationSettings =
       InitializationSettings(android: initializationSettingsAndroid);
-  await flutterLocalNotificationsPlugin.initialize(initializationSettings);
+  await flutterLocalNotificationsPlugin.initialize(initializationSettings,
+      onSelectNotification: (payload) async {
+    FlutterRingtonePlayer.stop();
+  });
   await fetchAndScheduleAlarms();
 
   var notificationStatus = await Permission.notification.status;
@@ -141,6 +179,7 @@ class MyHomePage extends StatefulWidget {
       this.dropdownvalue,
       this.dropdownvalue2}) {
     _retrieveData();
+    _getData();
   }
   @override
   State<MyHomePage> createState() {
@@ -240,15 +279,19 @@ class _MyHomePageState extends State<MyHomePage> {
                   ),
                 ),
               ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              child: Column(
                 children: [
-                  Text(
-                    task['stringValue'].toString().toUpperCase(),
-                    style: const TextStyle(
-                        fontSize: 20, fontWeight: FontWeight.w600),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        task['stringValue'].toString().toUpperCase(),
+                        style: const TextStyle(
+                            fontSize: 20, fontWeight: FontWeight.w600),
+                      ),
+                      const Icon(Icons.delete_outline_rounded)
+                    ],
                   ),
-                  const Icon(Icons.delete_outline_rounded)
                 ],
               ),
               onPressed: () {
@@ -280,15 +323,19 @@ void deleteAll() {
 Future<void> showNotification(
     FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin) async {
   const AndroidNotificationDetails androidPlatformChannelSpecifics =
-      AndroidNotificationDetails('channel id', 'channel name',
-          channelDescription: 'channel_name',
-          importance: Importance.high,
-          priority: Priority.high,
-          icon: '@mipmap/ic_launcher');
+      AndroidNotificationDetails(
+    'channel id',
+    'channel name',
+    channelDescription: 'channel_name',
+    importance: Importance.high,
+    priority: Priority.high,
+    icon: '@mipmap/ic_launcher',
+  );
   const NotificationDetails platformChannelSpecifics =
       NotificationDetails(android: androidPlatformChannelSpecifics);
   await flutterLocalNotificationsPlugin.show(
-      0, 'audible Alerts', 'Alarm', platformChannelSpecifics);
+      0, 'audible Alerts', 'Alarm is Ringing', platformChannelSpecifics,
+      payload: 'notification_payload');
 }
 
 void speak(String text) async {
