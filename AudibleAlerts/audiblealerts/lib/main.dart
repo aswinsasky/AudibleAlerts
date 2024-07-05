@@ -1,23 +1,143 @@
 import "dart:async";
+import "dart:convert";
 
 import "package:audiblealerts/addtask_page.dart";
 import "package:audiblealerts/input_fields.dart";
+import "package:flutter/cupertino.dart";
 
 import "package:flutter/material.dart";
 import "package:audiblealerts/appbar_style.dart";
 import "package:audiblealerts/model/ListDate.dart";
+import "package:flutter/widgets.dart";
 import "package:flutter_local_notifications/flutter_local_notifications.dart";
 import "package:permission_handler/permission_handler.dart";
 import "package:android_alarm_manager_plus/android_alarm_manager_plus.dart";
 import "package:flutter_tts/flutter_tts.dart";
 import "package:path/path.dart";
+import "package:shared_preferences/shared_preferences.dart";
 import "package:sqflite/sqflite.dart";
 import "package:flutter_ringtone_player/flutter_ringtone_player.dart";
 
 final dbHelper = DatabaseHelper();
 late List<Map<String, dynamic>> number;
+
+class Task {
+  final String title;
+  final String description;
+  bool isCompleted;
+  Task(
+      {required this.title,
+      required this.description,
+      this.isCompleted = false});
+  Map<String, dynamic> toJson() {
+    return {
+      'title': title,
+      'description': description,
+      'isCompleted': isCompleted,
+    };
+  }
+
+  static Task fromJson(Map<String, dynamic> json) {
+    return Task(
+      title: json['title'],
+      description: json['description'],
+      isCompleted: json['isCompleted'],
+    );
+  }
+}
+
+List<Task> suggestedTasks = [
+  Task(
+    title: 'Hydration Habit',
+    description: 'Drink 8 glasses of water today.',
+  ),
+  Task(
+    title: 'Morning Routine',
+    description:
+        'Spend 10 minutes stretching or doing light exercises after waking up.',
+  ),
+  Task(
+    title: 'GoodBye Routine',
+    description: 'Say GoodBye to someone you love with a kiss',
+  ),
+  Task(
+    title: 'Gratitude Journal',
+    description: "Write down 3 things you're grateful for today.",
+  ),
+  Task(
+    title: 'Connect with Nature',
+    description: 'Plant a tree and water it',
+  ),
+  Task(
+    title: 'Random Act of Kindness',
+    description: 'Do something kind for someone else today.',
+  ),
+  Task(
+    title: 'Reflect and Plan',
+    description: 'Reflect on everything you did today',
+  ),
+  Task(
+    title: 'Maintain Hygeine',
+    description: 'Clean your room and yourself',
+  ),
+  Task(
+    title: 'Learn Something New',
+    description: 'Spend 20 minutes learning something new today.',
+  ),
+  Task(
+    title: 'Social Connection',
+    description:
+        "Call or meet a friend or family member you haven't talked to in a while.",
+  ),
+  Task(
+    title: 'Maintain Connection',
+    description: 'Greet Everyone you meet today',
+  ),
+  Task(
+    title: 'Build  Healthy Relation',
+    description: 'Compliment your family and peers',
+  ),
+  Task(
+    title: 'Limit Social Media',
+    description: 'Limit social media use to 30 minutes today.',
+  ),
+  Task(
+    title: 'Helping Mentality',
+    description: 'Help people who require help if you can',
+  ),
+  Task(
+    title: 'Reading mentality',
+    description: 'Start Reading a book',
+  ),
+  Task(
+    title: 'Volunteering',
+    description: 'Spend time volunteering or helping out in your community',
+  ),
+  Task(
+    title: 'Speak Up',
+    description: 'Try Talking to someone new',
+  ),
+  Task(
+    title: 'Digital-Free Evening',
+    description: 'Spend the evening without using any digital devices today.',
+  ),
+  Task(
+    title: 'Personal Development',
+    description: 'Try to think from the perspective of others',
+  ),
+  Task(
+    title: 'Celebrate and Share',
+    description:
+        'Celebrate even the smallest achievements with your loved ones',
+  ),
+];
 void _getData() async {
   number = await dbHelper.getData();
+}
+
+void cancelNotification(int id) async {
+  await AndroidAlarmManager.cancel(id);
+  print('The Notification at $id is deleted');
 }
 
 void callback(int id) async {
@@ -61,7 +181,7 @@ void callback(int id) async {
         dbHelper.getTaskName(id, dropdownvalue).toString(),
         dropDownValue.toString());
   }
-  await dbHelper.deleteData(id);
+  deleteData(id);
 }
 
 void scheduleAlarm(int id, DateTime alarmTime, String taskName) async {
@@ -111,6 +231,7 @@ Future<void> fetchAndScheduleAlarms() async {
     } else {
       await db.deleteData(id);
       print('Deleted past alarm: $taskName scheduled at $dateTime');
+      MyHomePage();
     }
   }
 }
@@ -164,7 +285,7 @@ class AudibleAlerts extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-        home: DefaultTabController(length: 2, child: MyHomePage()));
+        home: DefaultTabController(length: 3, child: MyHomePage()));
   }
 }
 
@@ -191,6 +312,7 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     super.initState();
+    _loadTasks();
     fetchAndScheduleAlarms();
   }
 
@@ -198,7 +320,7 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return MaterialApp(
       home: DefaultTabController(
-        length: 2,
+        length: 3,
         child: Scaffold(
           appBar: const AppBarStyles("AudibleAlerts"),
           body: FutureBuilder<List<Map<String, dynamic>>>(
@@ -236,6 +358,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 children: [
                   _buildTabContent(context, todayTasks),
                   _buildTabContent(context, upcomingTasks),
+                  _buildNewTabContent(context),
                 ],
               );
             },
@@ -279,23 +402,20 @@ class _MyHomePageState extends State<MyHomePage> {
                   ),
                 ),
               ),
-              child: Column(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        task['stringValue'].toString().toUpperCase(),
-                        style: const TextStyle(
-                            fontSize: 20, fontWeight: FontWeight.w600),
-                      ),
-                      const Icon(Icons.delete_outline_rounded)
-                    ],
+                  Text(
+                    task['stringValue'].toString().toUpperCase(),
+                    style: const TextStyle(
+                        fontSize: 20, fontWeight: FontWeight.w600),
                   ),
+                  const Icon(Icons.delete_outline_rounded)
                 ],
               ),
               onPressed: () {
                 setState(() {
+                  cancelNotification(tasks.indexOf(task));
                   deleteData(tasks.indexOf(task));
                 });
               },
@@ -304,6 +424,97 @@ class _MyHomePageState extends State<MyHomePage> {
         },
       ).toList(),
     ));
+  }
+
+  Future<void> _loadTasks() async {
+    final prefs = await SharedPreferences.getInstance();
+    final List<String>? taskJsonList = prefs.getStringList('tasks');
+    if (taskJsonList != null) {
+      setState(() {
+        suggestedTasks = taskJsonList
+            .map((taskJson) =>
+                Task.fromJson(Map<String, dynamic>.from(json.decode(taskJson))))
+            .toList();
+      });
+    }
+  }
+
+  Future<void> _saveTasks() async {
+    final prefs = await SharedPreferences.getInstance();
+    final List<String> taskJsonList =
+        suggestedTasks.map((task) => json.encode(task.toJson())).toList();
+    prefs.setStringList('tasks', taskJsonList);
+  }
+
+  double get _CompletionProgress {
+    int completedTasks =
+        suggestedTasks.where((task) => task.isCompleted).length;
+    return completedTasks / suggestedTasks.length;
+  }
+
+  Widget _buildNewTabContent(BuildContext context) {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          const Padding(padding: EdgeInsets.only(left: 10)),
+          LinearProgressIndicator(
+            minHeight: 20.0,
+            value: _CompletionProgress,
+            valueColor: const AlwaysStoppedAnimation<Color>(Colors.green),
+          ),
+          const SizedBox(
+            child: const Text('Progress Indicator'),
+          ),
+          Expanded(
+            child: ListView.separated(
+              separatorBuilder: (context, index) {
+                return const Divider();
+              },
+              itemCount: suggestedTasks.length,
+              itemBuilder: (context, index) {
+                return ListTile(
+                  tileColor: Colors.white,
+                  title: Text(
+                    suggestedTasks[index].title,
+                    style: TextStyle(
+                      decoration: suggestedTasks[index].isCompleted
+                          ? TextDecoration.lineThrough
+                          : TextDecoration.none,
+                    ),
+                  ),
+                  subtitle: Text(suggestedTasks[index].description),
+                  trailing: Icon(suggestedTasks[index].isCompleted
+                      ? Icons.check_box_sharp
+                      : Icons.check_box_outline_blank_sharp),
+                  onTap: () {
+                    setState(() {
+                      suggestedTasks[index].isCompleted =
+                          !suggestedTasks[index].isCompleted;
+                      suggestedTasks.add(Task(
+                          title: suggestedTasks[index].title,
+                          description: suggestedTasks[index].description,
+                          isCompleted: suggestedTasks[index].isCompleted));
+                      suggestedTasks.removeAt(index);
+                      int completedTasks = suggestedTasks
+                          .where((task) => task.isCompleted)
+                          .length;
+                      if (completedTasks == 10) {
+                        FlutterTts flutterTts2 = FlutterTts();
+                        flutterTts2.setSpeechRate(0.4);
+                        flutterTts2.speak(
+                            "Congrats,You Have Completed 10 Daily Tasks. Only 10 more to go, to complete this challenge");
+                      }
+                      _saveTasks();
+                    });
+                  },
+                );
+              },
+            ),
+          )
+        ],
+      ),
+    );
   }
 
   void resetAll() async {

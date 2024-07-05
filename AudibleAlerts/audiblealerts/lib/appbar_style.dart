@@ -21,6 +21,7 @@ class AppBarStyles extends StatelessWidget implements PreferredSizeWidget {
           Tab(
             text: "Upcoming",
           ),
+          Tab(text: 'Suggested Tasks'),
         ],
       ),
       backgroundColor: const Color.fromARGB(255, 189, 85, 253),

@@ -59,7 +59,7 @@ class _DatePickerButtonState extends State<DatePickerButton> {
       label: Text(
         selectedDate == null
             ? "Select Date"
-            : "Date:$selectedDate2-$selectedDate3-$selectedDate4",
+            : "Date:$selectedDate2-0$selectedDate3-$selectedDate4",
         style: const TextStyle(
             color: Colors.black, fontWeight: FontWeight.w600, fontSize: 20),
       ),
