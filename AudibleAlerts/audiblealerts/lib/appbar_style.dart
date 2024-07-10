@@ -3,10 +3,25 @@ import "package:flutter/cupertino.dart";
 import "package:flutter/material.dart";
 import "package:audiblealerts/styled_text.dart";
 
-class AppBarStyles extends StatelessWidget implements PreferredSizeWidget {
-  const AppBarStyles(this.titles, {super.key});
-  final String titles;
+late List<Map<String, dynamic>> data;
+void _retrieveData() async {
+  data = await dbHelper.getData();
+}
+
+class AppBarStyles extends StatefulWidget implements PreferredSizeWidget {
+  const AppBarStyles({super.key, this.titles});
+  final String? titles;
   @override
+  State<AppBarStyles> createState() {
+    return _AppBarStylesState();
+  }
+
+  @override
+  @override
+  Size get preferredSize => const Size.fromHeight(100);
+}
+
+class _AppBarStylesState extends State<AppBarStyles> {
   Widget build(BuildContext context) {
     return AppBar(
       toolbarHeight: 40,
@@ -25,25 +40,24 @@ class AppBarStyles extends StatelessWidget implements PreferredSizeWidget {
         ],
       ),
       backgroundColor: const Color.fromARGB(255, 189, 85, 253),
-      title: Padding(
-          padding: const EdgeInsets.only(
+      title: const Padding(
+          padding: EdgeInsets.only(
             left: 10,
             top: 13,
           ),
-          child: StyledText(
-            titles,
-          )),
+          child: StyledText()),
       iconTheme: const IconThemeData(color: Colors.white),
       actions: <Widget>[
         IconButton(
             onPressed: () {
-              speak('HI All');
+              _retrieveData();
+              setState(() {
+                Navigator.pushReplacement(context,
+                    MaterialPageRoute(builder: (context) => MyHomePage()));
+              });
             },
-            icon: const Icon(Icons.settings_sharp))
+            icon: const Icon(Icons.replay_rounded))
       ],
     );
   }
-
-  @override
-  Size get preferredSize => const Size.fromHeight(100);
 }

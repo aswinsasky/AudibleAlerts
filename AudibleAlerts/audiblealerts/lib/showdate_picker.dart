@@ -1,11 +1,14 @@
 import "package:audiblealerts/addtask_page.dart";
 import "package:flutter/material.dart";
 import "package:audiblealerts/elevated_radius.dart";
+import "package:audiblealerts/week_day.dart";
 
 DateTime? selectedDate;
 final selectedDate2 = selectedDate?.year;
 final selectedDate3 = selectedDate?.month;
 final selectedDate4 = selectedDate?.day;
+WeekDay weekDay = WeekDay();
+final selectedDate6 = weekDay.forWeekDay(selectedDate3);
 
 class DatePickerButton extends StatefulWidget {
   const DatePickerButton({super.key});
@@ -59,13 +62,13 @@ class _DatePickerButtonState extends State<DatePickerButton> {
       label: Text(
         selectedDate == null
             ? "Select Date"
-            : "Date:$selectedDate2-0$selectedDate3-$selectedDate4",
+            : "Date:$selectedDate4-$selectedDate6-$selectedDate2",
         style: const TextStyle(
             color: Colors.black, fontWeight: FontWeight.w600, fontSize: 20),
       ),
       icon: const Icon(
         Icons.calendar_month_outlined,
-        color: Colors.black,
+        color: Color.fromARGB(255, 150, 9, 127),
       ),
     );
   }

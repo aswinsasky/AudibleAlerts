@@ -20,6 +20,7 @@ import "package:flutter_ringtone_player/flutter_ringtone_player.dart";
 
 final dbHelper = DatabaseHelper();
 late List<Map<String, dynamic>> number;
+final speakTasks = dbHelper.fetchAlarms();
 
 class Task {
   final String title;
@@ -144,6 +145,7 @@ void callback(int id) async {
   _getData();
   showNotification(FlutterLocalNotificationsPlugin());
   final dropDownValue = await dbHelper.getTaskName(id, 'dropdownvalue1');
+  final dropDownValue2 = await dbHelper.getTaskName(id, 'dropdownvalue2');
   final taskName = await dbHelper.getTaskName(id, 'stringValue');
   String nextdateTime = dbHelper.getTaskName(id, 'dateTimeValue').toString();
   if (nextdateTime == null) {
@@ -157,6 +159,8 @@ void callback(int id) async {
   int nextdateTime5 = nextdateTime2.minute;
   DateTime nextdateTime3 = DateTime(nextdateTime2.year, nextdateTime2.month,
       nextdateTime2.day + 1, nextdateTime2.hour, nextdateTime2.minute);
+  DateTime nextdateTime6 = DateTime(nextdateTime2.year, nextdateTime2.month,
+      nextdateTime2.day, nextdateTime2.hour, nextdateTime5 + 2);
   print('Alarm triggered for task: $taskName at ${DateTime.now()}');
 
   FlutterTts flutterTts = FlutterTts();
@@ -169,19 +173,40 @@ void callback(int id) async {
       const Duration(seconds: 5),
     );
     await flutterTts.speak(
-        'It is $nextdateTime4 $nextdateTime5 Time to ${taskName.toString()}');
+        'It is ,$nextdateTime4 $nextdateTime5,Time to ,${taskName.toString()}');
   }
   FlutterRingtonePlayer.stop();
   print('The length is ${number.length}');
-  if (dropDownValue.toString() == 'Daily') {
+  if (dropDownValue2.toString() == '2 minutes' ||
+      dropDownValue2.toString() == '5 minutes') {
+    if (dropDownValue2.toString() == '2 minutes') {
+      dbHelper.insertData(
+          number.length,
+          taskName.toString(),
+          nextdateTime2.add(const Duration(minutes: 2)).toString(),
+          dbHelper.getTaskName(id, dropdownvalue).toString(),
+          dropDownValue.toString());
+    } else {
+      dbHelper.insertData(
+          number.length,
+          taskName.toString(),
+          nextdateTime2.add(const Duration(minutes: 5)).toString(),
+          dbHelper.getTaskName(id, dropdownvalue).toString(),
+          dropDownValue.toString());
+    }
+  }
+  if (dropDownValue.toString() == 'Daily' &&
+      dropDownValue2 == '2 minutes' &&
+      dropDownValue2 == '5 minutes') {
     dbHelper.insertData(
-        number.length,
+        number.length + 1,
         taskName.toString(),
         nextdateTime3.toString(),
-        dbHelper.getTaskName(id, dropdownvalue).toString(),
+        dropDownValue2.toString(),
         dropDownValue.toString());
   }
   deleteData(id);
+  MyHomePage();
 }
 
 void scheduleAlarm(int id, DateTime alarmTime, String taskName) async {
@@ -205,6 +230,31 @@ void scheduleAlarm(int id, DateTime alarmTime, String taskName) async {
 
 Future<List<Map<String, dynamic>>> fetchAlarms(Database db) async {
   return await db.query('TaskTable');
+}
+
+Future<void> fetchTaskList() async {
+  DateTime now = DateTime.now();
+  final today = DateTime(now.year, now.month, now.day, 23, 59, 59);
+  final db = DatabaseHelper();
+  final taskToday = await db.fetchAlarms();
+  FlutterTts flutterTts = FlutterTts();
+  flutterTts.setSpeechRate(0.4);
+  flutterTts.speak("Welcome, Today's,   Tasks are: ");
+  for (var tasksToday in taskToday) {
+    final dateTime = tasksToday['dateTimeValue'] as String?;
+    if (dateTime == null) {
+      continue;
+    }
+    final dateTime2 = DateTime.tryParse(dateTime);
+    if (dateTime2 == null) {
+      continue;
+    }
+    if (dateTime2.isBefore(today)) {
+      await Future.delayed(const Duration(seconds: 4));
+      await flutterTts.speak('Task, ${tasksToday['stringValue']}');
+      Future.delayed(const Duration(seconds: 1));
+    }
+  }
 }
 
 Future<void> fetchAndScheduleAlarms() async {
@@ -316,65 +366,94 @@ class _MyHomePageState extends State<MyHomePage> {
     fetchAndScheduleAlarms();
   }
 
+  void reloadPage() {
+    setState(() {
+      MyHomePage();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       home: DefaultTabController(
         length: 3,
         child: Scaffold(
-          appBar: const AppBarStyles("AudibleAlerts"),
-          body: FutureBuilder<List<Map<String, dynamic>>>(
-            future: _retrieveData(),
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return const Center(
-                  child: CircularProgressIndicator(),
-                );
-              } else if (snapshot.hasError) {
-                return Center(
-                  child: Text('Error: ${snapshot.error}'),
-                );
-              } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                return const Center(
-                  child: Text('Press + to add Tasks'),
-                );
-              }
-              List<Map<String, dynamic>> data = snapshot.data!;
-              List<Map<String, dynamic>> todayTasks = [];
-              List<Map<String, dynamic>> upcomingTasks = [];
-              DateTime now = DateTime.now();
-              DateTime today =
-                  DateTime(now.year, now.month, now.day, 23, 59, 59);
-              DateTime upcoming = today.add(const Duration(seconds: 1));
-              for (var task in data) {
-                DateTime taskDueDate = DateTime.parse(task['dateTimeValue']);
-                if (taskDueDate.isBefore(upcoming)) {
-                  todayTasks.add(task);
-                } else {
-                  upcomingTasks.add(task);
+            appBar: const AppBarStyles(),
+            body: FutureBuilder<List<Map<String, dynamic>>>(
+              future: _retrieveData(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(
+                    child: CircularProgressIndicator(),
+                  );
+                } else if (snapshot.hasError) {
+                  return Center(
+                    child: Text('Error: ${snapshot.error}'),
+                  );
                 }
-              }
-              return TabBarView(
-                children: [
-                  _buildTabContent(context, todayTasks),
-                  _buildTabContent(context, upcomingTasks),
-                  _buildNewTabContent(context),
-                ],
-              );
-            },
-          ),
-          floatingActionButton: FloatingActionButton(
-            child: const Icon(Icons.add),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute<void>(
-                  builder: (context) => AddTaskPage(),
+                List<Map<String, dynamic>> data = snapshot.data!;
+                List<Map<String, dynamic>> todayTasks = [];
+                List<Map<String, dynamic>> upcomingTasks = [];
+                DateTime now = DateTime.now();
+                DateTime today =
+                    DateTime(now.year, now.month, now.day, 23, 59, 59);
+                DateTime upcoming = today.add(const Duration(seconds: 1));
+                for (var task in data) {
+                  DateTime taskDueDate = DateTime.parse(task['dateTimeValue']);
+                  if (taskDueDate.isBefore(upcoming)) {
+                    todayTasks.add(task);
+                  } else {
+                    upcomingTasks.add(task);
+                  }
+                }
+                return TabBarView(
+                  children: [
+                    todayTasks.isEmpty
+                        ? const Center(
+                            child: Text('Press + to add tasks'),
+                          )
+                        : _buildTabContent(context, todayTasks),
+                    upcomingTasks.isEmpty
+                        ? const Center(child: Text('Press + to add tasks'))
+                        : _buildTabContent(context, upcomingTasks),
+                    _buildNewTabContent(context),
+                  ],
+                );
+              },
+            ),
+            floatingActionButton: Stack(
+              children: <Widget>[
+                Align(
+                  alignment: Alignment.bottomRight,
+                  child: FloatingActionButton(
+                    heroTag: 'fab1',
+                    child: const Icon(Icons.add),
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute<void>(
+                          builder: (context) => AddTaskPage(),
+                        ),
+                      );
+                    },
+                  ),
                 ),
-              );
-            },
-          ),
-        ),
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 80),
+                  child: Align(
+                    alignment: Alignment.bottomRight,
+                    child: FloatingActionButton(
+                      heroTag: 'fab2',
+                      onPressed: () async {
+                        Future.delayed(const Duration(seconds: 2));
+                        await fetchTaskList();
+                      },
+                      child: const Icon(Icons.hearing),
+                    ),
+                  ),
+                )
+              ],
+            )),
       ),
     );
   }
@@ -457,14 +536,23 @@ class _MyHomePageState extends State<MyHomePage> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          const Padding(padding: EdgeInsets.only(left: 10)),
-          LinearProgressIndicator(
-            minHeight: 20.0,
-            value: _CompletionProgress,
-            valueColor: const AlwaysStoppedAnimation<Color>(Colors.green),
+          const Padding(padding: EdgeInsets.only(left: 10, top: 20)),
+          const Text(
+            '20 Tasks Challenge',
+            textAlign: TextAlign.start,
+            style: TextStyle(fontSize: 25, fontWeight: FontWeight.w700),
+          ),
+          Container(
+            padding: const EdgeInsets.only(left: 20, right: 20),
+            child: LinearProgressIndicator(
+              borderRadius: const BorderRadius.all(Radius.circular(8)),
+              minHeight: 20.0,
+              value: _CompletionProgress,
+              valueColor: const AlwaysStoppedAnimation<Color>(Colors.green),
+            ),
           ),
           const SizedBox(
-            child: const Text('Progress Indicator'),
+            child: Text('Progress Indicator'),
           ),
           Expanded(
             child: ListView.separated(
