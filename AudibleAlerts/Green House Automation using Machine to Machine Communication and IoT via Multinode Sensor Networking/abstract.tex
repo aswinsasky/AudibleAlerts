@@ -1,0 +1,35 @@
+\chapter*{Abstract}%
+%\addcontentsline{toc}{chapter}{\numberline{}Abstract}%
+\addcontentsline{toc}{chapter}{Abstract}%
+
+ 
+Agriculture is the backbone of our country. Nowadays so many advanced technologies
+in the field of science and technologies are utilizing to improve productivity and quality
+of crops generated through agriculture. One of the oldest concepts in electronics field
+that incorporate with agriculture field is automation. A single controller that has some
+set of sensors and actuators like moisture sensor, temperature sensor, humidity sensor,
+PH sensor, Motor Pumps, Draft Fans etc. Most of these automations are working
+with respect to the codes programmed on the controller board. After this automated
+systems, IoT concept is added in the internet era for monitor parameters and trigger
+actuators from anywhere in the world using smartphone application.
+In case of large fields, a single controller can’t take data from sensors placed in a wide
+area of lands through wires. Even if we increase the data transmission cables length
+with a high-quality copper wire there must be some data loss due to copper loss. To
+overcome this problem, we need to develop multiple nodes of wireless network that
+can communicate each other through some media like internet.\\
+Here we are going to develop a system that has so many individual nodes that can
+perform specific tasks. For example, a green house has 3 types of crops, each crop
+needs different amount of water. Here we implement 3 nodes that can sense the soil
+moisture of each crop individually. And there is a 4th node that can control irrigation
+network of each node separately through some solenoid valves or motor pumps. Whennode one sense a water deficiency in its soil, it will establish a communication between
+there 4th node and tell it to activate irrigation supply to the 1 st crop. When the
+water required for this crop reaches it’s limit, 1st node send a request to 4th node
+to stop the irrigation supply to 1st crop. Above mentioned is just an example of this
+project. We will implement some nodes that can communicate each other to manage
+
+parameters like soil moisture, temperature, humidity etc. Alone with wireless sensor
+node networking, machine to machine communication is also implementing here. \\To
+reduce the power consumption, we can add low power consumption hardware and
+simple encryption algorithms to send data through wireless network. We can also
+monitor the sensor data uploaded by these nodes to an IoT server through our custommade android application. Application can also able to control the actuators like pump
+and fan from any corner of the world if we have an active internet connection.

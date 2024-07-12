@@ -1,0 +1,477 @@
+\documentclass[12pt,a4paper]{report}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{fancyhdr}
+\usepackage{cite}
+\usepackage{framed}
+\usepackage{a4wide}
+\usepackage{float}
+\usepackage{epsfig}
+\usepackage{longtable}
+\usepackage{enumerate}
+\usepackage{afterpage}
+\usepackage{multirow}
+\usepackage{ragged2e}
+\usepackage{gensymb}
+\usepackage{amsfonts} 
+\usepackage[left=3.5cm,top=1.5cm,right=3cm,bottom=4cm]{geometry}
+\usepackage{setspace}           
+\usepackage{float}
+\usepackage{txfonts}
+\usepackage{lipsum}
+
+\newcommand{\Usefont}[1]{\fontfamily{#1}\selectfont}
+
+\usepackage{lscape} % for landscape tables
+\renewcommand{\baselinestretch}{1.7} 
+
+\usepackage{blindtext}
+\usepackage{xpatch}
+\usepackage{url}
+\usepackage{leqno}
+\usepackage{subcaption}
+
+\linespread{1.5}
+\usepackage[intoc, english]{nomencl}
+\hyphenpenalty=5000
+\tolerance=1000
+\usepackage[nottoc]{tocbibind}
+\bibliographystyle{IEEEtran}
+\renewcommand{\bibname}{References}
+
+%*******************************************************************
+%                        Header and Footer   
+% This is not required in Technical reports submitted to CET ECE department.
+% Please leave it commented                       
+%*******************************************************************
+%\pagestyle{fancy}
+%\fancyhead{}
+%\header and footer section
+%\renewcommand\headrulewidth{0.1pt}
+%\fancyhead[L]{\footnotesize \leftmark}
+%\fancyhead[R]{\footnotesize \thepage}
+%\renewcommand\headrulewidth{0pt}
+%\fancyfoot[R]{\small College of Engineering Trivandrum}
+%\renewcommand\footrulewidth{0.1pt}
+%\fancyfoot[C]{2020 - 2021}
+%\fancyfoot[L]{\small Title of the Seminar/Project}
+%*******************************************************************
+
+
+%*********************Figures*****************************
+% Save all figures in the folder figures and include them in your 
+% report using the command \includegraphics{figure-name}
+
+\graphicspath{{figures/}}
+
+% figure files can be in jpeg,jpg, png or pdf formats
+%*******************************************************************
+
+
+\begin{document}
+	
+	
+%****The entries in this section are to be filled in by the student with appropriate values *************
+
+% These values are used thoroughout the report 
+% please fill in the appropriate values in the brackets {}
+
+\gdef \title{ Green House Automation using Machine to Machine Communication and IoT via Multinode Sensor Networking} % Project title
+%\gdef \author{Student Name}	 %student name
+\gdef \dept{Computer Science and Engineering} %Department
+\gdef \degree{Bachelor of Technology} %degree
+\gdef \branch{Computer Science and Engineering} %branch
+\gdef \college{LBS College of Engineering} % Name of the College
+\gdef \collegeplace{Kasaragod} % Location of the College
+\gdef \studentA{Fathimath Sajna} %Project batch member 1
+\gdef \studentAroll{KSD19CS029} % Project batch member 1 ktu id
+\gdef \studentB{Adithya T P} %Project batch member 2
+\gdef \studentBroll{KSD19CS007} % Project batch member 2 ktu id
+
+\gdef \studentC{Ardra Aravind} %Project batch member 3
+\gdef \studentCroll{KSD19CS016} % Project batch member 3 ktu id
+
+\gdef \studentD {Ayishath Shahama} %Project batch member 4
+\gdef \studentDroll{KSD19CS024} % Project batch member 4 ktu id
+
+\gdef \guide{Prof. Rahul C } %Project guide
+\gdef \guidedes{Assistant Professor}%project guide designation
+
+\gdef \guideco{Prof. Project coguide} %Project coguide
+\gdef \guidecodes{Assistant Professor}%project coguide designation
+
+\gdef \guideext{Prof. Project ext guide} %Project external organisation guide
+\gdef \guideextdes{Engineer/Scientist}%project external guide designation
+\gdef \guideextorg{External guide organization} % Project external guide organization
+
+\gdef \projcordinatorA{Prof. Anver S R}% Project coordinator 1 
+\gdef \projcordinatorAdes{Assistant Professor}% Project coordinator 1 designation
+
+\gdef \projcordinatorB{Prof. Project coordinator 2} % Project coordinator 2 
+\gdef \projcordinatorBdes{Assistant Professor}% Seminar coordinator 2 designation
+
+\gdef \hod{Prof . Anver S R} %Head of Department
+\gdef \hoddes{Professor and Head} %HOD designation
+
+\gdef \acadyear{2022 - 23} % Academic year
+\gdef \month{November 2022} %Month of Report submission
+\gdef \date{30-11-2022} %Date of signing the declaration
+
+%*******************************************************************
+% The font pages. The source tex files are there in the folder
+\include{coverpage} %Unless essential Do not edit this tex file
+
+
+%****************************Mission and vision***************************
+% The font pages. The source tex files are there in the folder
+\include{Department Vision and Mission.tex} %Unless essential Do not edit this tex file
+
+
+
+%%********************Certificate*******************
+
+% To print name of only the project coordinator 1 in the certificate page
+\include{certificate1} 
+
+% To print names of both the project coordinators in the certificate page
+%\include{certificate2} %Please uncomment this and comment the previous line
+
+%%***************************************************
+
+
+\include{declaration} %Unless essential Do not edit this tex file
+
+\pagenumbering{roman} 
+
+%%********************************Abstract***********************
+\include{abstract} % 
+
+ 
+%%***************************************************
+% Default Acknowledgement page
+\include{acknowledgement}  %Unless essential Do not edit this tex file
+
+
+%%***************************************************
+%%**If you have only one seminar coordinator faculty member
+% please comment the above line and uncomment this line
+
+%\include{acknowledgement1}  %Unless essential Do not edit this tex file
+%*******************************************************************
+
+\thispagestyle{empty}
+\newpage
+%%*********************Table of Contents**********************
+\tableofcontents
+\listoffigures
+
+ 
+
+%%********************Body of the report**********
+% Arabic numbering is used in the body of the report
+
+\cleardoublepage
+\setcounter{page}{1}
+\pagenumbering{arabic}
+
+%%********************Chapter 1**********
+\chapter{INTRODUCTION}
+Farming has been an activity humans have been involved in for a long period of time. The global population is growing rapidly, necessitating a greater output of food production. The traditional approach necessitates more manpower and water. Since agriculture has a great contribution in the overall economic development of a nation, Internet of Things (IoT) and Automation plays a crucial role in smart agriculture. Automation is  one of the oldest concepts in electronics field that incorporate with agriculture field.\\
+This greenhouse automation is a software which is created to automate the actions of the technical installations installed within the green house. This computerized greenhouse monitoring system employs a selection of detectors to track and assess the runoff for you. \\
+The information collected can be employed to guarantee following of any local laws if necessary and provide an accurate assessment of expenditure. It is not possible to adequately adjust all the elements that have an impact on the growth of your crops and, thus, your harvest by manually controlling them. That is why we recommend that you get a decent controller for your greenhouse. This will take away the guesswork from the task. Furthermore, an impressive automation system will monitor the atmosphere, your root zone, notify you when any issue arises and offer you the capability to manage everything from a distance through any device.
+In this project an automated agriculture system is developed to optimize the water and other resources of the crops. In addition, the lack of water and the concerning climate changes necessitate the implementation of more effective techniques for contemporary agricultural grounds. Therefore, it is essential to implement automation and utilize intelligent decision making in order to achieve this aim.\\ As technology advances, methods such as ubiquitous computing, satellite surveillance, Radio Frequency Identifier, wireless ad-hoc networks, sensor networks, remote sensing, the Internet of Things, context-aware computing, and cloud computing are becoming vastly more commonplace.
+Most of these automations are workings with the codes programmed on the  controller board. After this automated systems, IoT concept is added in the internet era to monitor parameters and trigger the actuators from anywhere in the world using a smartphone application. We are creating an alternate program to the regular farming procedure. This new system will allow farmers to gain insight into the condition of their land even when they are not physically present in the area. They will be able to gain this knowledge from any location in the world.
+In case of large fields, a single controller can’t take data from sensors placed in a wide area of lands through wires. Even if we increase the data transmission cables length with a high-quality copper wire there must be some data loss due to copper loss. \\To overcome this problem, we need to develop multiple nodes of wireless network that can communicate each other through some media like internet. our project will help the farmers by reducing the human interaction towards the agricultural tools and also controls the expenditure towards maintenance. We are developing a smart agriculture system to optimise the water and other resources for the crop. Here we use a single controller that has some set of sensors and actuators like moisture sensor, temperature sensor, humidity sensor, PH sensor, Motor Pumps, Draft Fans etc.
+
+
+
+\section{Motivation}\\
+\\Passing down farming knowledge from one generation to the next is no longer sufficient, since the world is changing at an unprecedented rate and the demands on the agricultural industry are ever-growing while the techniques remain the same. 
+The amount of individuals close to experiencing hunger and malnourishment is rapidly increasing. We need modern solutions to modern problems So what has this got to do with an automated Greenhouse? For upcoming farming technologies the greenhouse has been set up as a low budget testing system. In the farming sector,  the Internet of Things (IoT) is more essential than ever. Smart greenhouses are a perfect illustration of this.As the unpredictability intensifies, growers are turning to advanced technologies to boost their production efficiency and the crop resilience is not a big surprise.
+ 
+
+
+\section{Related Work}\\
+\\
+\ • Farm Automation Systems.\\
+  • Farm Automation Systems with IoT Support.\\
+  • Green House Automation Systems.\\
+  • Green House Automation Systems with IoT.\\
+  • Machine to Machine Communication in Swarm Robotics.\\
+  • Festo Butterfly Robot.
+\\
+\\
+\section{Purpose And Research Question}\\
+\\The goal of creating this Agricultural Automation System is to reduce the need for manual labour and the associated socioeconomic circumstances. In many countries these days, there is a tendency for people to move towards towns, mainly because farming has become a difficult occupation and farmers do not make enough money. Additionally, there is a shortage of skilled labour in the agricultural sector, which negatively affects the nation's economic situation. This is one of the main reason for automating the agricultural sector. Data from recent times illustrates that the growth rate of farmers in India has decreased during the last ten years, resulting in a decrease in the production of rice. Through the automation of agricultural processes, individuals can keep a close eye on the farming process even when they are not physically present in the field. In order to increase the output and quality of agriculture products, our proposed automated agriculture system helps in the use of highly precise farming techniques in combination with the latest technological innovations for agricultural practices. It also adds up to one more advantage of reducing heavy labour. Many businesses are transitioning to automation, and farming is no exception. From seed sowing to harvesting, almost every part of farming can be automated by the technological advancements. Farming is a labour-intensive process, with similar tasks being carried out repeatedly, making it a great option for automation. There has been progress in the development of Agri-Bots which can perform multiple farming activities such as planting, irrigating, gathering, and tracking. This modern age of intelligent agriculture is the response to the demand for increased food production with fewer human resources. This project is focused on a automation process that uses specialized equipment and incorporated software that could be advantageous to farming operations.
+
+
+\section{Problem Statement}\\
+\\
+ • Most of these automation works with respect to codes programmed.\\
+•  After this automated systems, IoT concept is added in the internet era using smartphone application.\\
+• In case of large fields, a single controller can’t take data from sensors that placed in a wide area of lands through wires.\\
+• To overcome this problem,we need to develop multiple nodes of wireless network that can communicate each other through some media like internet.\\
+\\
+\section{Approach and Methodology}\\
+\\
+In this project we are going to develop 3 separate nodes for execute our task. Node 1 and 2 have the ability to sense several parameters like soil moisture, temperature, light intensity and humidity. We are using DHT sensor (Digital Humidity and Temperature) for sensing humidity  and temperature  inside a green house. \\A pair of analogue soil moisture sensor is added for sense moisture from soil and an LDR based light sensor for sense the presence of sunlight inside green house. The 3rd node has the ability to actuate several tasks by following the instruction from the 1st and 2nd node. Node 3 can able to supply water (as artificial rain), Temperature controlling by drafting hot air from the green house and artificial growth light controlling ability. Here there is a 4th invisible node, it is a backend server for managing conversation between the 3 nodes.\\ Here we are going to use Google Firebase as our backend server. Which can help us prevent data missing obtained during communication between node 1, 2 and 3 due to buffering issue. An android app is also here to monitor the sensor reading from node 1 2 and actuate the tasks operated by node 3 from any corner of the world with only an active internet connection. We are using Wemos D1 SoC based controller board for develop Node 1,2 and 3. We can easily connect them to a Wi-Fi hotspot using two line of codes to establish internet connection\\
+\\
+\section{Scope and Limitations}\\
+\\
+\subsection{Scope}\\
+•3 Nodes, Circuit Building\\
+ Here we are implementing 3 node circuits with 2 sensors and 1 actuator.
+•Firmware Coding for Nodes\\
+ Firmwares are software that are embedded on hardware,here we are implementing the programs on the control boards of these three nodes.\\
+•Back-end Server Developing\\
+ A server is made using a google fire-base. The data is exchanged among the 3 nodes through this server.\\
+•Android App Developing\\
+ An android application is developed to monitor the sensor reading and  controlling the motor,fan,light etc.\\
+ \subsection{Limitation}\\
+• Can’t use at open agriculture land.\\
+• Only suitable for green house.\\
+• Require a Wi-Fi Hotspot with coverage area enough for 3 nodes.\\
+• Require 24x7 active internet connection for the working.\\
+\section{Target Group}\\
+• Large scale Green house planters.\\
+• Space Agencies can apply in space agriculture (NASA,ISRO).\\
+• Indoor gardeners.\\
+\\
+\chapter{THEORETICAL BACKGROUND}\\
+\section{Machine to Machine Communication}\\Machine to machine (M2M) technology is one of the most exciting projects of the 21st century. This revolutionary form of communication allows machines to communicate with each other without any human intervention. With M2M, machines are able to send and receive data, monitor and control each other, and even self-program and self-regulate. This technological advancement has the potential to revolutionize the way we do business, from streamlining operations to providing better customer service. From automated manufacturing to predictive maintenance, M2M technology can help businesses reduce costs and increase efficiency. And with the ever-evolving Internet of Things (IoT), M2M technology is becoming even more sophisticated. So if you want to stay ahead in the digital age, investing in M2M is the way to go.
+\\
+\section{IoT}\\
+IOT is a rapidly growing field. It has the potential to revolutionize how we interact with the world around us. IOT projects are popping up everywhere, from smart homes and connected cars to medical devices and more. The advantages of IOT are clear: greater efficiency, better communication, and improved safety. However, there are still some challenges. Security is a major concern, as IOT devices need to be protected from hacking and data theft. Additionally, the sheer number of devices and the complexity of the systems makes it difficult to manage and maintain. Still, the potential of IOT is too great to ignore. As technology advances and more devices become connected, the possibilities are endless. So if you're looking for an exciting and innovative project to get involved in, IOT is definitely worth exploring.
+\\
+\section{Multi-node Sensor Networking}\\
+Multinode is an exciting new project that is revolutionizing the way we use technology. It is based on the idea of having multiple nodes, or computers, that can be used to access, store, and process data. This eliminates the need for a centralized server and allows for faster, more efficient data processing and storage. With Multinode, data can be stored and accessed from anywhere in the world, giving businesses the freedom to work from anywhere. It also means that businesses can save money on hardware and software costs, as well as reduce their carbon footprint. Multinode is an incredibly powerful tool that is revolutionizing the way we use technology and providing businesses with new opportunities to succeed.
+\\
+\section{Cloud Server}\\
+It is used for data exchange between nodes,office PC and android application.\\
+\section{Android Application}\\
+It was an Android Mobile Application and connected using Wifi to a central server which connects through the microcontoller and humidity sensor. Through This we can control the humidity inside a green house. We can control the parameters from any where in the world.\\
+
+
+
+ 
+
+%%********************Chapter 2**********
+\chapter{LITERATURE REVIEW}
+
+\section{In Paper[1]} \\
+Water is a fundamental natural asset for farming, but we understand that it is limited. All living beings on this planet require water. As the population has raised drastically, and water is being utilized more, fresh water has turned out to be a significant resource. Smart irrigation systems should be employed to make irrigation more effective in this sector with the goal that water is used efficiently .This system has been developed to measure the moisture and humidity of the soil and then to utilize a selection of machine learning methods to process the information in the cloud. Farmers are being given the relevant data regarding water requirements. Smart irrigation can enable them to carry out agricultural activities with lesser water consumption. It is essential to employ technological innovations such as smart irrigation systems to make agricultural irrigation more efficient, thereby reducing the amount of water consumed and making it more productive.\\
+\section{In Paper[2]}\\ Agriculture is the main occupation in India. To make it more prosperous and beneficial, Indian farmer 
+should do a scientific farming. The main aim of the project is efficient use of water and investigate, 
+identify how the use of mobile phones with respect to WSN enables farmers to monitor and control 
+their farm field. This concept also gives mobile interface for accessing real-time data and secure 
+database so that it is helpful take good crop value by analysing past data. We have tested the soil
+using soil moisture sensor. The values of soil moisture content are varying with respect to water 
+content present in that soil.\\
+\section{In Paper[3]}\\
+To make the best use of fresh water for irrigation, it is necessary to create a clever irrigation system that relies on the prediction of soil moisture levels in the field and the precipitation information for the upcoming days. This article covers an intelligent system which anticipates soil moisture levels by looking at the data collected from sensors that have been installed in the field and the weather forecast available on the web. The field data was obtained through self-constructed sensor nodes.\\
+\section{In Paper[4]}\\
+Farming remains the primary occupation for half of India's population, providing their main source of income. The Agricultural sector of India is incredibly important, as it contributes an estimated 18 percentage to the country's total Gross Domestic Product (GDP). The most recent progressions in technology have had an effect on almost all aspects of life, and it has been used in a wide selection of applications, like smartphones, smart vehicles, and intelligent control systems. Despite the fact that technology has brought about countless improvements in various areas. Smart phones and the advancements in communication technologies have had a considerable influence on different stages and in the last few years, they have been used to keep an eye on the moisture level of the soil and the progress of crops in the agricultural sector.\\ This paper suggests an android app to help control farming machineries through the utilization of Internet of Things. This machine automation guarantees that the job is accomplished without any human intervention. The former agricultural system was equipped with an android application which was able to provide both the farmer and the soil moisture information as well as the growth of the crops. Even so, human help was needed to ensure the fields were watered and the crops were properly taken care of. The goal of this approach is to create automated machines to handle farming activities such as cultivation, irrigation, and cultivation in agricultural areas with the utilization of Internet of Things. It permits the farmers to remotely watch the machinery utilized in the farming, for example, tractors, engines, and so forth, and to control them. \\ The micro-controller incorporated into the system is programmed to guarantee that each step necessary for the plant's development is carried out accurately. Furthermore, the Zig-bee technology is employed to facilitate communication between the machines and the controller. The internet is used by the controller to send data to the farmer by way of an android app. The Wasp mote-sensors are utilized for keeping track of moisture in the soil, the level of humidity, amount of water, crop size, height, and the wind velocity, among other things. Therefore, the proposed system increases the output of crops without the need for farmer involvement.
+
+%%********************Chapter 3**********
+\chapter{SYSTEM ANALYSIS}\\
+\section{Feasibility Analysis}\\
+\subsection{Technical Feasibility}\\
+The concept explained in this report is a practical application of machine to machine communication we are going to develop threenodes that can able to communicate each other without any human interference to automate a green house there is a backend server in between these threenodes to avoid data loss due to buffering issues and internet coverage issues in addition to that an android app is also there for managing these nodes from anywhere in the world with an active internet connection all the sensors and components are locally available in several online shops and backend server used is google firebase which is very easy to set up and manage this project is a technically feasible one since all the technologies and services we are using in this project are familiar and not difficult to build.\\
+\subsection{Economic Feasibility}\\
+The Implementation cost of this project is very low as compared with the existing IoT automations. The cost of building these 3 nodes costs just 4000 rupees. Existing motor pumps and water supply network (sprinklers and droppers) can be utilized in to this system. Since we can Implement this system on a greenhouse for cheap cost, it is an economic feasible project too. \\
+\section{Algorithms}\\
+\subsection{Node 1}\\
+Step 1: Start\\Step 2: Establish Internet Connection Via Wi-Fi.\\Step 3: Establish Connection b/w Firebase Database.\\Step 4: Check Soil Moisture Sensor Reading.\\Step 5: If Moisture Level Above a Threshold Limit,goto Step 6,Else go to Step 7.\\Step 6 : Request Node 3 to Turn On Pump Number1 and goto Step 8\\Step 7 : Request Node 3 to Turn Off Pump Number 1.\\Step 8 : Check Temperature & Humidity Sensor Reading.\\Step 9 : If Temperature Value Above a Threshold Limit,goto Step 10,Else go to Step11.\\Step 10: Request Node 3 to Turn On Ventilation Fan and goto Step 12.\\Step 11: Request Node 3 to Turn On Ventilation Fan.\\Step 12: Request Node 2 and 3 For Give Their Data.\\Step 13: Display all Data on OLED Display and goto Step 4.\\
+\subsection{Node 2}\\
+Step 1: Start\\Step 2: Establish Internet Connection Via Wi-Fi.\\Step 3: Establish Connection b/w Firebase Database.\\
+Step 4: Check Soil Moisture Sensor Reading.\\Step 5: If Moisture Level Above a Threshold Limit , goto Step 6. Else go to Step 7.\\
+Step 6 : Request Node 3 to Turn On Pump Number 2 and goto Step 8\\
+Step 7 : Request Node 3 to Turn Off Pump Number 2.\\
+Step 8 : Check Light Sensor Reading.\\
+Step 9 : If Light Sensor Value Above a Threshold Limit,goto Step 10,Else goto Step11.\\
+Step 10: Request Node 3 to Turn On Growth Light and goto Step 12.\\
+Step 11: Request Node 3 to Turn On Growth Light.\\
+Step 12: Request Node 1 and 3 For Give Their Data.\\
+Step 13: Display all Data on OLED Display and goto Step 4.\\
+\subsection{Node 3}\\
+Step 1 : Start\\
+Step 2 : Establish Internet Connection Via Wi-Fi.\\
+Step 3 : Establish Connection b/w Firebase Database.\\
+Step 4 : Check for Any Node Requests.\\
+Step 5 : If no Requests Available, goto Step 4.Else goto Step 6.\\
+Step 6 : If Request for Activating/Deactivating Pump is Present goto Step.Else goto Step 8.\\
+Step 7 :If Requested by Node 1, Activate/Deactivate Pump Number 1, Else if Requested by Node 2, Activate/Deactivate Pump Number 2.\\
+Step 8 : If Request for Activating/Deactivating Ventilator Fan is Present goto Step 9.Else goto Step 10.\\
+Step 9 : Activate/Deactivate Ventilator Fan.\\
+Step 10: If Request for Activating/Deactivating Growth Light is Present goto Step 11.Else gotoStep 12.\\
+Step 11: Activate/Deactivate Growth Light.\\
+Step 12: If Data Request Present, Share all Data and goto Step 4.\\
+
+
+
+
+
+%%********************Chapter 4**********
+\chapter{SYSTEM DESIGN}\\
+
+Establishing the structure, elements, sections, points of contact, and details for a system that serves a particular purpose is the basis of this process. It can be employed in multiple circumstances, from software to computer hardware, and from physical networks to information technology networks. It involves the planning of the overall system architecture, determining how the system will be structured, and how it will interact with.
+
+\section{Circuit Diagram}
+\begin{figure}[h!]
+			\centerline {\includegraphics[scale=0.2]{figures/node 1.jpg}}
+                                        \caption{Node 1}
+   \end{figure}          
+ \begin{figure}[h!]
+
+      \centerline {\includegraphics[scale=0.3]{figures/node 1.jpg}}
+                                        \caption{Node 2}
+  \end{figure}              
+ \begin{figure}[h!]
+                 \centerline {\includegraphics[scale=0.3]{figures/node 1.jpg}}
+                                        \caption{Node 3}
+                
+
+ \end{figure}\\
+
+
+
+
+
+ \pagebreak  
+ \pagebreak
+ \\
+
+
+ \pagebreak  \\
+ \next
+ \section{Components}
+ \pagebreak
+      \begin{figure}[h!]
+      \centerline {\includegraphics[scale=0.2]{figures/Sensor - DHT11.jpg}}
+                                        \caption{DHT11 }\\ 
+                                        The DHT 11 is a temperature and humidity sensor used in electronic projects. It is a digital device, meaning it outputs a signal that can be read by a microcontroller. It is relatively inexpensive and easy to use, making it a popular choice for hobbyists and makers.
+
+                \end{figure}
+\begin{figure}[h!]
+\centerline {\includegraphics[scale=0.2]{figures/Sensor - Soil Moisture.jpg}}
+                                      \caption{Soil moisture sensors
+                                      }Soil moisture sensors are electronic devices that measure the amount of water or moisture in soil. They are typically used in agricultural and gardening applications to monitor soil conditions and inform decisions about irrigating or fertilizing. Soil moisture sensors are usually connected to a controller or a monitoring system to provide real-time data about the moisture content of the soil.
+
+                \end{figure}
+
+\begin{figure}[h!]
+\centerline {\includegraphics[scale=0.2]{figures/Sensor - LDR.jpg}}
+                                      \caption{LDR} LDR stands for Light Dependent Resistor. It is a type of resistor that changes its resistance in response to changes in the intensity of light that shines on it. It is commonly used in light sensors and light-activated switches.
+                \end{figure}
+\begin{figure}[h!]
+\centerline {\includegraphics[scale=0.2]{figures/Relay - 4 Channel 10A.jpg}}
+                                      \caption{Relay - 4 Channel} A relay 4 channel is an electronic switching device that can be used to control four separate circuits. It consists of four individual relays, each of which can be independently activated by a signal or switch. A relay 4 channel can be used to switch electrical power, control motors, and other applications.
+
+                \end{figure}
+\begin{figure}[h!]
+\centerline {\includegraphics[scale=0.2]{figures/Pump - Micro.jpg}}
+                                      \caption{ Pump-Micro} Pump micro is a term used to describe a type miniature pump used for a variety of applications. These pumps are typically used for applications requiring a small amount of fluid to be moved in a short amount of time. The small size of the pump allows for easy installation and operation in tight spaces.
+
+                \end{figure}
+\begin{figure}[h!]
+\centerline {\includegraphics[scale=0.2]{figures/LED.jpg}}
+                                      \caption{LED}
+                                      LED stands for Light Emitting Diode. It is a small, electric component that emits light when electricity passes through it. LEDs are used in a variety of products, including smartphones, televisions, headlights, and flashlights.
+                \end{figure}
+\begin{figure}[h!]
+\centerline {\includegraphics[scale=0.2]{figures/Cooler Fan.jpg}}
+                                      \caption{Ventilation fan}
+                                      A ventilation fan is a device that is used to circulate air and draw in fresh air into a room or building. It is usually installed in the ceiling and is used to reduce humidity, odors, and heat, as well as to provide ventilation and air circulation.
+
+
+                \end{figure}
+\begin{figure}[h!]
+\centerline {\includegraphics[scale=0.2]{figures/Wemos D1.jpg}}
+                                      \caption{Wemos D1}
+                                      The Wemos D1 is an Arduino-compatible, open-source development board based on the ESP8266 Wi-Fi chip. It is designed to make it easy for users to connect to and control a variety of external devices. The Wemos D1 can be programmed with the Arduino IDE and also supports MicroPython.
+The WEMOS D1 Mini is an open-source, low-cost Arduino-compatible development board. It is based on the ESP8266 WiFi microcontroller and is designed to be used for IoT projects. It has 11 digital input/output pins, a micro USB connection, and a built-in WiFi module. It is also compatible with popular Arduino.
+                \end{figure}\\
+
+\chapter{METHODOLOGY}
+\section{Objective}
+The objective of this project is to implement machine-to-machine communication in the agriculture field. The main goals include optimizing water usage, automating irrigation processes, and improving crop growth. This will be achieved by establishing communication among three nodes, each equipped with specific sensors and actuators.\\
+\section{System Design} 
+The system design consists of three nodes: Node 1, Node 2, and Node 3. Node 1 is equipped with a soil moisture sensor, as well as a temperature and humidity sensor. Node 2 has a soil moisture sensor and a light intensity sensor. Node 3 contains a pair of motor pumps, an exhaust fan, and a growth light, all of which are controlled using a 4-channel solenoid valve. All three nodes are connected to a Google Firebase database for seamless data exchange. The nodes are controlled using an ESP8266-based Wemos D1 controller board, and they feature OLED displays to visualize information from the Firebase database. Additionally, an Android app is developed to monitor readings and control the nodes remotely.\\
+\section{Node Configuration}
+Each node is configured with the necessary hardware and software components. This includes connecting the sensors, actuators, and the Wemos D1 controller board. The OLED displays are set up to show real-time information from the Firebase database, providing easy access to data for monitoring purposes.
+\section{Firebase Integration} 
+To enable data exchange, a connection is established between the nodes and the Firebase database. The appropriate API calls or libraries are implemented to facilitate communication. Emphasis is placed on ensuring proper authentication and security measures to protect the data.
+\section{Data Collection}
+Code is implemented on each node to periodically read sensor data. Node 1 and Node 2 collect soil moisture, temperature, humidity, and light intensity readings. The collected data is stored in the Firebase database for further analysis and processing.
+\section{Event Detection} 
+Algorithms are developed to detect specific events based on the sensor readings. These events include low soil moisture, high temperature, and darkness. Logic is implemented to trigger corresponding actions based on the detected events.
+\section{Data Reporting}
+Each node is configured to report events and relevant data to Node 3 through the Firebase database. For example, when Node 1 detects low soil moisture, it sends a signal to Node 3 to activate the corresponding pump. Similarly, when Node 1 detects high temperature, it reports to Node 3 to turn on the exhaust fan. 
+\section{Actuator Control}
+The control logic is implemented on Node 3 to receive event signals from Node 1 and Node 2. The actuators (pumps, exhaust fan, growth light) are controlled using the Wemos D1 controller board and the 4-channel solenoid valve. Node 3 responds appropriately to the events reported by Node 1 and Node 2, ensuring efficient operation of the system.        
+\section{Android App Development}
+An Android app is developed to provide remote monitoring and control capabilities. The app is integrated with the Firebase database to fetch real-time data. User-friendly interfaces are implemented to display sensor readings and allow manual control of the nodes when needed.
+\section{Testing and Validation} 
+A thorough testing process is conducted to validate the system's functionality. Sensor readings are verified for accuracy, communication between nodes through the Firebase database is tested, and the response of the actuators to the reported events is evaluated. The Android app is also tested to ensure proper monitoring and control of the nodes.
+\section{Deployment and Optimization}
+After successful testing, the nodes are installed in the agriculture field. They are properly powered and connected to the Wi-Fi network for continuous operation. The system's performance is monitored over time, and necessary adjustments are made to optimize its efficiency. 
+\chapter{RESULT} 
+\begin{figure}[h!]
+			\centerline {\includegraphics[scale=0.2]{figures/Node1.jpg}} 
+              Node 1
+              
+\end{figure}\\
+\\\\ \begin{figure}[h!]
+                \centerline
+             {\includegraphics[scale=0.2]{figures/Node2.jpg}}
+              Node 2
+\end{figure}\\\\
+\\\ \begin{figure}[h!]
+                \centerline
+              {\includegraphics[scale=0.2]{figures/Node3.jpg}} 
+               Node 3
+\end{figure}\\
+
+
+
+
+                
+                
+
+
+%%********************Chapter 5**********
+\chapter{CONCLUSION}
+
+Our system let people to monitor and manage raising scenarios of their greenhouse. Yield of the land could be improved. By utilizing sensor nodes, cloud computing, and an internet connection, people will be able to receive real-time updates about their plants, allowing them to grow plants in a more cost-effective way. Through the observations and results of traditional tests, it has been concluded that this project will provide a solution for automating activities within greenhouses and for irrigation, thus leading to the development of a smart irrigation system and smart farming. Putting this system into practice in the agriculturally-based sectors can certainly aid in raising the yield of crops and total output, as well as being cost-effective so that the majority of farmers and related industries can access it. Weariness of the farmers can also be reduced.
+
+
+%%********************Publications***********
+\include{Project s7/Publication}
+
+%%********************References**********
+%%****This template uses IEEE bibliography style
+
+\begin{thebibliography}{99}
+	\bibitem{ref1} Bashar, Abul. (2019). AGRICULTURAL MACHINE AUTOMATION USING IOT THROUGH ANDROID. Journal of Electrical Engineering and Automation. 1. 83-92. 10.36548/jeea.2019.2.003. 
+	
+	\bibitem{ref2}
+	Math, Rajinderkumar & Dharwadkar, Nagaraj. (2017). A wireless sensor network based low cost and energy efficient frame work for precision agriculture. 
+ \bibitem{ref3}
+	Raj, A., Srinivasan, B., Abhishek, D., Jeyavanth, S., & Kannan, V.A. (2016). IoT based Agro Automation System using Machine Learning Algorithms.
+ 
+ \bibitem{ref4}
+	Olly Roy Chowdhury , Sarna Majumder, 2021, Prospect of IoT Based Smart Agriculture in Bangladesh-A Review, INTERNATIONAL JOURNAL OF ENGINEERING RESEARCH & TECHNOLOGY (IJERT) Volume 10, Issue 11 (November 2021),
+ \bibitem{ref5}
+	García L, Parra L, Jimenez JM, Lloret J, Lorenz P. IoT-Based Smart Irrigation Systems: An Overview on the Recent Trends on Sensors and IoT Systems for Irrigation in Precision Agriculture. Sensors (Basel). 2020 Feb 14;20(4):1042. doi: 10.3390/s20041042. PMID: 32075172; PMCID: PMC7070544.
+ 
+
+	\bibitem{ref6} Bhoi, A., Nayak, R. P., Bhoi, S. K., Sethi, S., Panda, S. K., Sahoo, K. S., & Nayyar, A. (2021). IoT-IIRS: Internet of Things based intelligent-irrigation recommendation system using machine learning approach for efficient water usage. PeerJ Computer Science, 7, e578. 	
+\end{thebibliography}
+
+
+
+           
+
+    
+
+\end{document}
